@@ -5,9 +5,12 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from typing import Dict, Any, List
+from mcp import MCPServer
+from .tools import describe_dataset, clean_dataset, feature_engineering, calculate_correlations
 
-class MCPDataServer:
+class MCPDataServer(MCPServer):
     def __init__(self):
+        super().__init__()
         self.data_cache = {}
         self.current_df = None
         
@@ -68,11 +71,48 @@ class MCPDataServer:
             return {"status": "success", "plot": fig.to_json()}
         except Exception as e:
             return {"status": "error", "message": str(e)}
+            
+    def describe_data(self) -> Dict[str, Any]:
+        """获取数据集描述"""
+        if self.current_df is None:
+            return {"status": "error", "message": "No data loaded"}
+        return {"status": "success", "description": describe_dataset(self.current_df)}
+        
+    def clean_data(self, options: Dict[str, Any]) -> Dict[str, Any]:
+        """清理数据集"""
+        if self.current_df is None:
+            return {"status": "error", "message": "No data loaded"}
+        try:
+            cleaned_df = clean_dataset(self.current_df, options)
+            self.current_df = cleaned_df
+            return {"status": "success", "message": "Data cleaned successfully"}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+            
+    def engineer_features(self, features: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """特征工程"""
+        if self.current_df is None:
+            return {"status": "error", "message": "No data loaded"}
+        try:
+            new_df = feature_engineering(self.current_df, features)
+            self.current_df = new_df
+            return {"status": "success", "message": "Features engineered successfully"}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+            
+    def get_correlations(self, method: str = "pearson") -> Dict[str, Any]:
+        """获取相关性分析"""
+        if self.current_df is None:
+            return {"status": "error", "message": "No data loaded"}
+        try:
+            correlations = calculate_correlations(self.current_df, method)
+            return {"status": "success", "correlations": correlations}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
 
 def main():
     server = MCPDataServer()
-    # 这里可以添加服务器启动代码
-    print("MCP Data Analysis Server is running...")
+    server.start()
     
 if __name__ == "__main__":
     main() 

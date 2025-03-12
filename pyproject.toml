@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-server-ds"
+version = "0.1.5"
+authors = [
+    { name = "ReadingPlus.AI", email = "info@readingplus.ai" }
+]
+description = "MCP Server for Data Science and Analysis"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/reading-plus-ai/mcp-server-data-exploration"
+"Bug Tracker" = "https://github.com/reading-plus-ai/mcp-server-data-exploration/issues" 
